@@ -1,7 +1,7 @@
 # MIDI Studio Player
 
 ブラウザだけで動く、インストール不要の **超高機能 MIDI プレイヤー** です。
-SoundFont（SF2 / SF3 / DLS）による高音質シンセで MIDI を再生し、ピアノロール・降下ノーツ・カラオケ歌詞などの多彩なビジュアライザー、16ch ミキサー、WAV 書き出し、Web MIDI、オフライン（PWA）に対応しています。完全な静的サイトなので、そのまま **Cloudflare Pages** で公開できます。
+SoundFont（SF2 / SF3 / DLS）による高音質シンセで MIDI を再生し、ピアノロール・降下ノーツ・カラオケ歌詞などの多彩なビジュアライザー、16ch ミキサー、WAV 書き出し、Web MIDI、オフライン（PWA）に対応しています。完全な静的サイトなので、そのまま **Cloudflare（Workers の静的アセット / Pages）** で公開できます。
 
 - 読み込んだファイルはすべて **ブラウザ内だけ** で処理されます（サーバーには送信されません）
 - 日本語 / 英語 UI（ブラウザの言語に合わせて自動選択）
@@ -149,43 +149,41 @@ CHROMIUM_PATH=/path/to/chrome npm run test:e2e
 - `npm run gen:icons` … アイコン・OGP 画像を SVG から再生成（Chromium が必要）
 - `node scripts/screenshots.mjs` … README 用スクリーンショットを撮影（preview 起動中に実行）
 
-## Cloudflare Pages へのデプロイ
+## Cloudflare へのデプロイ
 
-どちらの方法でも、出力先は `dist/` です。`public/_headers`（CSP・キャッシュ設定など）と `public/_redirects`（SPA フォールバック）はビルド時に `dist/` へコピーされ、Cloudflare Pages がそのまま解釈します。
+出力先は `dist/` です。`wrangler.toml` は **Workers の静的アセット** として配信する設定（`[assets] directory = "./dist"`、SPA フォールバック付き）になっています。`public/_headers`（CSP・キャッシュ設定など）と `public/_redirects` はビルド時に `dist/` へコピーされ、Workers / Pages のどちらでも解釈されます。
 
-### A. Git 連携（推奨）
+### A. ダッシュボードの Git 連携（推奨）
 
-1. Cloudflare ダッシュボード → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. このリポジトリを選択
-3. ビルド設定
-   - Framework preset: **None**
+1. Cloudflare ダッシュボード → **Workers & Pages** → **Create** → **Import a repository** でこのリポジトリを選択
+2. ビルド設定
    - Build command: `npm run build`
-   - Build output directory: `dist`
-   - 環境変数: `NODE_VERSION` = `22`
-4. **Save and Deploy**
+   - Deploy command: `npx wrangler deploy`（既定のまま）
+   - 環境変数（ビルド）: `NODE_VERSION` = `22`
+3. **Deploy**
 
-以降は `main` への push で本番、プルリクエストごとに **プレビューデプロイ**（`https://<hash>.<project>.pages.dev`）が自動で作られるので、PR 上で動作確認できます。
+`main` への push で本番に、それ以外のブランチ / PR ではプレビュー版が自動でデプロイされます。公開 URL は `https://midi2.<アカウントのサブドメイン>.workers.dev/`（独自ドメインも設定可能）。
+
+> 旧来の **Pages**（Create → Pages → Connect to Git）で作る場合は、Build command `npm run build`、Build output directory `dist` を指定してください（Deploy command は不要）。
 
 ### B. Wrangler で直接デプロイ
 
 ```bash
 npx wrangler login
-npm run deploy       # = npm run build && wrangler pages deploy dist --project-name=midi2
+npm run deploy         # = npm run build && wrangler deploy（Workers）
+npm run deploy:pages   # Pages プロジェクトに出す場合（CF_PAGES_PROJECT で名前を指定、既定 midi2）
 ```
-
-プロジェクト名を変える場合は `CF_PAGES_PROJECT=my-project npm run deploy`。
 
 GitHub Actions から自動デプロイする場合は、リポジトリの **Settings → Secrets and variables → Actions** に次を登録します（未登録ならデプロイジョブは自動でスキップされます）。
 
-- `CLOUDFLARE_API_TOKEN` … 「Cloudflare Pages: Edit」権限を持つ API トークン
+- `CLOUDFLARE_API_TOKEN` … 「Workers Scripts: Edit」権限を持つ API トークン
 - `CLOUDFLARE_ACCOUNT_ID` … アカウント ID
-- （任意）Variables に `CF_PAGES_PROJECT` … Pages のプロジェクト名（既定 `midi2`）
 
-`.github/workflows/ci.yml` は PR ごとに lint / format / typecheck / unit / build / check:pages / E2E を実行し、Secrets がある場合のみ `cloudflare/wrangler-action` でデプロイします（PR はプレビュー、`main` は本番）。
+`.github/workflows/ci.yml` は PR ごとに lint / format / typecheck / unit / build / check:pages / E2E を実行し、Secrets がある場合のみ `cloudflare/wrangler-action` でデプロイします（PR はプレビュー版のアップロード、`main` は本番）。
 
 > A と B を両方使うと二重にデプロイされます。どちらか一方を選んでください。
 >
-> 公開 URL が `https://midi2.pages.dev/` 以外になる場合（プロジェクト名や独自ドメインが異なる場合）は、`index.html` の canonical / OGP、`public/robots.txt`、`public/sitemap.xml` の URL を書き換えてください。
+> 公開 URL が `https://midi2.pages.dev/` 以外になる場合（workers.dev や独自ドメインの場合）は、`index.html` の canonical / OGP、`public/robots.txt`、`public/sitemap.xml` の URL を書き換えてください。
 
 ## 設計判断
 

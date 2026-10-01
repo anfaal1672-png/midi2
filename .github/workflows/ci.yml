@@ -50,9 +50,9 @@ jobs:
           retention-days: 7
 
   deploy:
-    # Cloudflare の Secrets が設定されている場合のみ、Wrangler で Pages にデプロイする
+    # Cloudflare の Secrets が設定されている場合のみ、Wrangler でデプロイする（wrangler.toml の静的アセット設定を使用）
     # （Cloudflare ダッシュボードの Git 連携を使う場合はこのジョブは不要＝自動でスキップ）
-    name: Deploy to Cloudflare Pages (Wrangler)
+    name: Deploy to Cloudflare (Wrangler)
     needs: check
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
@@ -75,4 +75,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT || 'midi2' }} --branch=${{ github.head_ref || github.ref_name }}
+          # main は本番デプロイ、PR はプレビュー用バージョンのアップロード
+          command: ${{ github.event_name == 'pull_request' && 'versions upload' || 'deploy' }}
