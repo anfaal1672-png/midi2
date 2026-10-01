@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>MIDI Studio Player — ブラウザで動く高機能 MIDI プレイヤー</title>
+    <meta
+      name="description"
+      content="インストール不要、ブラウザだけで MIDI を高音質再生。SoundFont（SF2/SF3/DLS）対応、ピアノロール・降下ノーツ・カラオケ歌詞・16ch ミキサー・WAV 書き出し・Web MIDI・オフライン対応。"
+    />
+    <meta name="theme-color" content="#0e1116" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="canonical" href="https://midi2.pages.dev/" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MIDI Studio Player" />
+    <meta property="og:title" content="MIDI Studio Player — ブラウザで動く高機能 MIDI プレイヤー" />
+    <meta
+      property="og:description"
+      content="SoundFont 対応の高音質 MIDI 再生。ピアノロール、降下ノーツ、カラオケ、ミキサー、WAV 書き出し、Web MIDI。"
+    />
+    <meta property="og:image" content="https://midi2.pages.dev/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "MIDI Studio Player",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (modern web browser)",
+        "browserRequirements": "Requires Web Audio API and AudioWorklet",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+        "inLanguage": ["ja", "en"],
+        "description": "Advanced in-browser MIDI player with SoundFont synthesis, visualizers, karaoke, mixer, WAV export and Web MIDI."
+      }
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #0e1116;
+        color: #e6e8eb;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          'Hiragino Sans',
+          'Noto Sans JP',
+          sans-serif;
+      }
+      @media (prefers-color-scheme: light) {
+        html:not([data-theme='dark']) body {
+          background: #f6f7f9;
+          color: #14171c;
+        }
+      }
+      html[data-theme='light'] body {
+        background: #f6f7f9;
+        color: #14171c;
+      }
+      #boot {
+        display: grid;
+        place-items: center;
+        height: 100vh;
+        font-size: 14px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"><div id="boot">MIDI Studio Player…</div></div>
+    <noscript>このアプリには JavaScript が必要です / JavaScript is required.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

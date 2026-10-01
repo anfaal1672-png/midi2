@@ -1,0 +1,24 @@
+MIDI Studio Player — Third-party software and assets
+====================================================
+
+spessasynth_lib / spessasynth_core
+  Copyright (c) Spessasus
+  License: Apache License 2.0 (see spessasynth_lib-Apache-2.0.txt)
+  https://github.com/spessasus/spessasynth_lib
+
+GeneralUser GS v2.0.3 (public/soundfonts/GeneralUserGS.sf3)
+  Copyright (c) S. Christian Collins
+  License: GeneralUser GS License v2.0 (see GeneralUser-GS.txt)
+  https://www.schristiancollins.com/generaluser.php
+  The SF3 (Ogg Vorbis compressed) version is distributed by the SpessaSynth project.
+
+Preact, @preact/signals — MIT License — https://preactjs.com
+idb — ISC License — https://github.com/jakearchibald/idb
+fflate — MIT License — https://github.com/101arrowz/fflate
+lucide-preact — ISC License — https://lucide.dev
+Workbox — MIT License — https://developer.chrome.com/docs/workbox
+
+Demo songs (public/demo)
+  Original sequences of public-domain works (Beethoven, Petzold, Pachelbel,
+  traditional Japanese song "Sakura Sakura", "Twinkle Twinkle Little Star"),
+  created for this project and dedicated to the public domain (CC0 1.0).
