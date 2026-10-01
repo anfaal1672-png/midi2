@@ -108,15 +108,22 @@ export function patchChannel(ch: number, patch: Partial<ChannelState>) {
 
 // ---- 保存（設定）
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
-effect(() => {
-  const s = settings.value;
+const saveSettingsNow = () => {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
-    } catch {}
-  }, 200);
+  saveTimer = undefined;
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings.peek()));
+  } catch {}
+};
+effect(() => {
+  void settings.value;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveSettingsNow, 200);
 });
+// ページを離れる直前の変更も失わないよう、未保存なら即座に書き込む
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => saveTimer !== undefined && saveSettingsNow());
+}
 
 // 言語
 effect(() => {

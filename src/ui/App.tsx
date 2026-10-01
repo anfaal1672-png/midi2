@@ -40,11 +40,12 @@ import { Transport } from './Transport';
 import { LibraryPanel } from './LibraryPanel';
 import { MixerPanel } from './Mixer';
 import { VisualPanel } from './VisualPanel';
+import { SimpleApp } from './SimpleApp';
 import { AboutModal, ExportModal, HelpModal, SettingsModal, UrlModal } from './Modals';
 import { IconButton } from './primitives';
 import { t } from './i18n';
 
-function Toasts() {
+export function Toasts() {
   return (
     <div class="toasts" role="status" aria-live="polite">
       {toasts.value.map((x) => (
@@ -76,7 +77,7 @@ function Toasts() {
   );
 }
 
-function DropOverlay() {
+export function DropOverlay() {
   const [active, setActive] = useState(false);
   useEffect(() => {
     let depth = 0;
@@ -187,6 +188,15 @@ function Header() {
         {recording.value.active && <span class="rec-dot" title={t('rec.recording')} />}
       </div>
       <div class="header-actions">
+        <button
+          type="button"
+          class="btn small simple-switch"
+          onClick={() => patchSettings({ uiMode: 'simple' })}
+          title={t('simple.switchToSimpleHint')}
+          data-testid="to-simple"
+        >
+          {t('simple.switchToSimple')}
+        </button>
         <IconButton
           label={t('set.showLeft')}
           active={s.showLeft}
@@ -270,6 +280,11 @@ function StartGate() {
 }
 
 export function App() {
+  if (settings.value.uiMode === 'simple') return <SimpleApp />;
+  return <FullApp />;
+}
+
+function FullApp() {
   const s = settings.value;
   const m = modal.value;
   const mt = mobileTab.value;

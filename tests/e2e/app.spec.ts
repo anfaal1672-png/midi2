@@ -155,4 +155,33 @@ test.describe('MIDI Studio Player', () => {
     await playSong(page, 'Minuet');
     await context.setOffline(false);
   });
+
+  test('easy mode: pick a song, play, change speed, and switch back', async ({ page }) => {
+    await open(page);
+    await page.click('[data-testid=to-simple]');
+    await expect(page.locator('.simple-app')).toBeVisible();
+    await expect(page.locator('.simple-steps')).toBeVisible();
+    await page.locator('[data-testid=simple-song-list] .simple-song', { hasText: 'Minuet' }).click();
+    await expect(page.locator('.simple-title')).toContainText('Minuet');
+    await expect(page.locator('[data-testid=simple-play]')).toHaveAttribute('aria-label', '一時停止', {
+      timeout: 30_000,
+    });
+    await page.click('[data-testid="simple-speed-0.75"]');
+    await expect(page.locator('[data-testid="simple-speed-0.75"]')).toHaveAttribute('aria-checked', 'true');
+    await page.click('[data-testid=simple-play]');
+    await expect(page.locator('[data-testid=simple-play]')).toHaveAttribute('aria-label', '再生');
+    // 設定は保存され、再読み込み後もかんたんモードのまま
+    await page.reload();
+    await expect(page.locator('.simple-app')).toBeVisible();
+    await page.click('[data-testid=to-full]');
+    await expect(page.locator('.app-header')).toBeVisible();
+    await expect(page.locator('.mini-control').first()).toContainText('×0.75');
+    expect(errors).toEqual([]);
+  });
+
+  test('opens easy mode from /simple', async ({ page }) => {
+    await page.goto('/simple');
+    await expect(page.locator('.simple-app')).toBeVisible();
+    await expect(page.locator('[data-testid=simple-song-list] .simple-song')).toHaveCount(5);
+  });
 });

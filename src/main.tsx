@@ -15,12 +15,19 @@ import {
   setupMediaSessionHandlers,
   togglePlay,
 } from './audio/player';
-import { installPrompt, settings, songs, updateReady } from './state/store';
+import { installPrompt, patchSettings, settings, songs, updateReady } from './state/store';
 import { errorMessage, log, toast } from './state/notify';
 import { t } from './ui/i18n';
 
 const params = new URLSearchParams(location.search);
 const obs = params.get('obs') === '1';
+
+// /simple（または ?mode=simple）でかんたんモード、?mode=full ですべての機能
+if (location.pathname.replace(/\/+$/, '') === '/simple' || params.get('mode') === 'simple') {
+  patchSettings({ uiMode: 'simple' });
+} else if (params.get('mode') === 'full') {
+  patchSettings({ uiMode: 'full' });
+}
 
 setupTheme();
 setupShortcuts();
