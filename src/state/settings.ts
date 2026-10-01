@@ -11,6 +11,8 @@ export type ColorBy = 'channel' | 'track' | 'velocity';
 export interface Settings {
   lang: LangSetting;
   theme: ThemeMode;
+  /** 画面モード: すべての機能 / 初心者向けのかんたんモード */
+  uiMode: 'full' | 'simple';
   accent: string;
   volume: number; // 0..1.5
   reverb: number; // 0..2
@@ -54,6 +56,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   lang: 'auto',
   theme: 'system',
+  uiMode: 'full',
   accent: '#4f8cff',
   volume: 0.8,
   reverb: 1,
@@ -130,5 +133,6 @@ export function sanitizeSettings(raw: unknown): Settings {
   s.leftWidth = clamp(s.leftWidth, 200, 600);
   s.rightWidth = clamp(s.rightWidth, 240, 700);
   s.loopCount = clamp(Math.round(s.loopCount), 0, 999);
+  if (s.uiMode !== 'simple') s.uiMode = 'full';
   return s;
 }
