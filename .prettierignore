@@ -1,0 +1,9 @@
+dist
+node_modules
+public/soundfonts
+public/demo
+package-lock.json
+coverage
+test-results
+playwright-report
+*.md
