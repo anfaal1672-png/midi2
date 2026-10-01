@@ -1,3 +1,10 @@
+# Cloudflare Workers（静的アセット）として配信する設定。
+# ダッシュボードの Git 連携（Workers Builds）の既定デプロイコマンド `npx wrangler deploy` でそのまま動く。
+# dist/ の _headers / _redirects も解釈される。
 name = "midi2"
-pages_build_output_dir = "dist"
 compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+# 見つからないパスは index.html を返す（SPA）
+not_found_handling = "single-page-application"
